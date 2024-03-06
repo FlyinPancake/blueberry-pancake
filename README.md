@@ -36,11 +36,16 @@ For more information about customization, see [the README in the config director
 Documentation around making custom images exists / should be written in two separate places:
 * [The Tinkerer's Guide on the website](https://universal-blue.org/tinker/make-your-own/) for general documentation around making custom images, best practices, tutorials, and so on.
 * Inside this repository for documentation specific to the ins and outs of the template (like module documentation), and just some essential guidance on how to make custom images.
+# Legacy template [![build-ublue](https://github.com/blue-build/legacy-template/actions/workflows/build.yml/badge.svg)](https://github.com/blue-build/legacy-template/actions/workflows/build.yml)
+
+> **Warning**  
+> This repository was previously `ublue-os/startingpoint`, but has now been [moved to the BlueBuild organization](https://blue-build.org/blog/introducing-bluebuild/). New custom images should be created from the new [blue-build/template](https://github.com/blue-build/template), but this repository will be supported for the foreseeable future.  
+> Check out the [migration guide](https://blue-build.org/blog/introducing-bluebuild/#how-to-migrate) for migration instructions.
 
 ## Installation
 
-> **Warning**
-> [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable) and should not be used in production, try it in a VM for a while!
+> **Warning**  
+> [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
 
 To rebase an existing Silverblue/Kinoite installation to the latest build:
 
@@ -73,26 +78,18 @@ The `latest` tag will automatically point to the latest build. That build will s
 
 ## ISO
 
-This template includes a simple Github Action to build and release an ISO of your image. 
+This template includes a simple Github Action to build and release an ISO of your image.
 
 To run the action, simply edit the `boot_menu.yml` by changing all the references to startingpoint to your repository. This should trigger the action automatically.
 
-The Action uses [isogenerator](https://github.com/ublue-os/isogenerator) and works in a similar manner to the official Universal Blue ISO. If you have any issues, you should first check [the documentation page on installation](https://universal-blue.org/installation/). The ISO is a netinstaller and should always pull the latest version of your image.
+The Action currently uses [ublue-os/isogenerator-old](https://github.com/ublue-os/isogenerator-old) and works in a similar manner to the official Universal Blue ISO. If you have any issues, you should first check [the documentation page on installation](https://universal-blue.org/installation/). The ISO is a netinstaller and should always pull the latest version of your image.
 
 Note that this release-iso action is not a replacement for a full-blown release automation like [release-please](https://github.com/googleapis/release-please).
 
-## `just`
+## Verification
 
-The [`just`](https://just.systems/) command runner is included in all `ublue-os/main`-derived images.
+These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
 
-You need to have a `~/.justfile` with the following contents and `just` aliased to `just --unstable` (default in posix-compatible shells on ublue) to get started with just locally.
+```bash
+cosign verify --key cosign.pub ghcr.io/blue-build/legacy-template
 ```
-!include /usr/share/ublue-os/just/main.just
-!include /usr/share/ublue-os/just/nvidia.just
-!include /usr/share/ublue-os/just/custom.just
-```
-Then type `just` to list the just recipes available.
-
-The file `/usr/share/ublue-os/just/custom.just` is intended for the custom just commands (recipes) you wish to include in your image. By default, it includes the justfiles from [`ublue-os/bling`](https://github.com/ublue-os/bling), if you wish to disable that, you need to just remove the line that includes bling.just.
-
-See [the just-page in the Universal Blue documentation](https://universal-blue.org/guide/just/) for more information.
